@@ -27,6 +27,7 @@ fi
 read -p "Installing Password Manager (Passmag) ? (yes/no): " response
 if [ "$response" == "yes" ] || [ -z "$response" ]; then
         echo "Proceeding..."
+
 	#some config
 	codedir="/code"
 	appdir="/code/passmag"
@@ -34,22 +35,26 @@ if [ "$response" == "yes" ] || [ -z "$response" ]; then
 	#creating directories
 	mkdir $codedir
 	mkdir $appdir
-	sleep 10
+	sleep 2
 	#cd /code/passmag
-	git clone https://github.com/julyuio/Pass  /code/passmag
+	git clone https://github.com/julyuio/Pass  $appdir
 
 	#installing virtual env
 	apt install python3.10-venv -y
 	echo "Creating Venv..." && sleep 2
-	sudo python3 -m venv /code/passmag/venv
+	sudo python3 -m venv $appdir/venv
 	echo "Activating Venv..." && sleep 2
-        source /code/passmag/venv/bin/activate
+        source $appdir/venv/bin/activate
 	echo "Installing Requirements..." && sleep2
-	pip install -r /code/passmag/requirements.txt
-	cp file.gconfig.py /code/passmag/gconfig.py
+	pip install -r $appdir/requirements.txt
+	cp file.gconfig.py $appdir/gconfig.py
 	echo ""
-	echo "In order to activate gunicorn use take a look at gconfig.py and also use the folowing: "
-	echo -e "${IGreen} gunicorn -c /code/passmag/gconfig.py Pass.wsgi:application ${Color_Off}"
+	echo -e "${IRed}Step1:${Color_Off} Activate venv "
+	echo -e "${IRed}Step2:${Color_Off} take a look at gconfig.py in the same folder as app"
+	echo -e "${IRed}Step3:${Color_Off} run the folowing command:"
+	echo -e "${IGreen} gunicorn -c $appdir/gconfig.py Pass.wsgi:application ${Color_Off}"
+	echo "Further configuation and creating of the database is needed inside the app."
+	echo ""
 else
         echo "Skipping PassMag..."
         exit 1
