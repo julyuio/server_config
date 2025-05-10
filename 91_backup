@@ -1,0 +1,93 @@
+#!/bin/bash
+
+source conf
+
+WGinterface="wg1"
+WGPort="51820"
+
+#__________ Installing WG  ___________________
+echo " "
+echo -e "${IGreen} Installing WG... ${Color_Off} "
+sleep 2
+echo " "
+
+# installing wireguard
+apt install wireguard -y
+
+#set ip forwarding
+sysctl -w net.ipv4.ip_forward=1
+sysctl -p
+#IPv6
+#Enable if you want Ipv6
+#sysctl -w net.ipv6.conf.all.forwarding=1
+
+#__________ Configuration and Keys___________
+echo -e "${IRed} Rotating WG keys in 10... ${Color_Off} "
+counter=0
+while [ $counter -lt 10 ]; do
+    counter=$((counter + 1))
+    echo -n -e "${IRed}... $counter ${Color_Off}"$'\r'
+    sleep 1
+done
+
+#Gen Keys
+wg genkey | tee privatekey_server | wg pubkey > publickey_server
+wg genkey | tee privatekey_client | wg pubkey > publickey_client
+
+#Read them and delete
+read -r pk_server < privatekey_server
+read -r pub_server < publickey_server
+read -r pk_client < privatekey_client
+read -r pub_client < publickey_client
+rm privatekey_server publickey_server privatekey_client publickey_client
+
+int=$WGinterface
+port=$WGPort
+eth=$(ip -o addr | awk '!/^[0-9]*: ?lo|link\/ether/ {gsub("/", " "); print $2}' | head -n 1)    #ethernet
+wgip=$(ip -o addr | awk '!/^[0-9]*: ?lo|link\/ether/ {gsub("/", " "); print $4}' | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | head -n 1)
+wg_server="wg.server"
+
+
+#________________ Server Configuration File___________________
+echo "[Interface]" > $wg_server
+echo "Address = 10.0.0.1/8">> $wg_server
+echo "PrivateKey = $pk_server ">> $wg_server
+echo "PostUp = iptables -A FORWARD -i $int -j ACCEPT; iptables -t nat -A POSTROUTING -o $eth -j MASQUERADE;">> $wg_server
+echo "PostDown = iptables -D FORWARD -i $int -j ACCEPT; iptables -t nat -D POSTROUTING -o $eth -j MASQUERADE;">> $wg_server
+echo "ListenPort = $port">> $wg_server
+echo "#DNS = 1.1.1.1">> $wg_server
+echo "">> $wg_server
+
+echo "[Peer]">> $wg_server
+echo "PublicKey = $pub_client">> $wg_server
+echo "AllowedIPs = 10.0.0.0/24">> $wg_server
+
+#copying the server file to wireguard
+cp $wg_server "/etc/wireguard/$int.conf"
+rm $wg_server
+
+wg-quick down $int
+wg-quick up $int
+
+#adding wg as a service
+systemctl enable "wg-quick@$int.service"
+
+
+#wg_client="wg1.client"
+#________________ Client Configuration File_________________
+echo "Please copy this to the client:"
+echo ""
+
+echo "[Interface]"
+echo "PrivateKey = $pk_client"
+echo "Address = 10.0.0.2/32"
+echo "DNS = 1.1.1.1"
+echo ""
+echo "[Peer]"
+echo "PublicKey = $pub_server"
+echo "AllowedIPs = 0.0.0.0/0, ::/0"
+echo "Endpoint = $wgip:$port"
+echo ""
+echo ""
+
+

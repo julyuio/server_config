@@ -1,0 +1,22 @@
+#!/bin/bash
+#Configuration file
+
+#___________ Variables ____________________
+
+USERNAME="july"
+SSHPort=6195
+
+WGinterface="wg1"
+WGPort="51820"
+
+#_____________Setting Colours________________
+
+IRed='\033[0;91m'         # Red
+IGreen='\033[0;92m'       # Green
+Color_Off='\033[0m'       # Text Reset
+#__________ SUDO Checks___________________
+# Check if the script is run with sudo
+if [[ $EUID -ne 0 ]]; then
+  echo -e "${IRed}This script must be run with sudo.${Color_Off}"
+  exit 1
+fi

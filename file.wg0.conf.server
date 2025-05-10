@@ -1,0 +1,16 @@
+[Interface]
+Address = 10.0.0.1/8
+PrivateKey = ABGffRQ79LTySXFrmu6QKC5ijN/iAcC6YcUm3GeOSl8=
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens6 -j MASQUERADE;
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens6 -j MASQUERADE;
+ListenPort = 51820
+#DNS = 1.1.1.1
+ 
+[Peer]
+PublicKey = FQ0vsC4SkDKDJE9J1vAym9bBPhcvepojKvQpFF1icl4=
+AllowedIPs = 10.0.0.0/24
+ 
+ 
+ 
+ 
+ 
