@@ -6,8 +6,8 @@
 USERNAME="july"
 SSHPort=6195
 
-WGinterface="wg1"
-WGPort="51820"
+#WGinterface="wg1"
+#WGPort="51820"
 
 #_____________Setting Colours________________
 
