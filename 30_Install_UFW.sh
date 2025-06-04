@@ -26,13 +26,11 @@ echo "Adding Intenal Rules..."
 #Setting internal rules
 ufw allow from 10.0.0.0/24  > /dev/null 2>&1
 ufw allow from 172.16.0.0/12 > /dev/null 2>&1
-ufw allow from 77.68.2.183 > /dev/null 2>&1
 ufw allow 80 > /dev/null 2>&1
 ufw allow 22 > /dev/null 2>&1
-ufw allow 51820 > /dev/null 2>&1
 ufw allow 53 > /dev/null 2>&1
 ufw allow 443 > /dev/null 2>&1
-ufw allow 6195 > /dev/null 2>&1
+ufw allow 6295 > /dev/null 2>&1
 # Allowing IPs from Let's Encrypt SSL
 ufw allow from 52.38.45.221 > /dev/null 2>&1
 ufw allow from 13.212.180.206 > /dev/null 2>&1
