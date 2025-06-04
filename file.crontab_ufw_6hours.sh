@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #_________Config__________________
-tempdir="/july/iplog"
+tempdir="/july/crontab"
 tempfile="$tempdir/temp_ips.txt"
 ip_block="$tempdir/block_list.txt"
 ip_allow="$tempdir/allow_list.txt"
@@ -40,7 +40,6 @@ echo "Allowing own IPs and ports..."
 #Setting internal rules
 ufw allow from 10.0.0.0/12  > /dev/null 2>&1
 ufw allow from 172.16.0.0/12 > /dev/null 2>&1
-ufw allow from 77.68.2.183 > /dev/null 2>&1
 # Allowing IPs from Let's Encrypt SSL
 ufw allow from 52.38.45.221 > /dev/null 2>&1
 ufw allow from 13.212.180.206 > /dev/null 2>&1
