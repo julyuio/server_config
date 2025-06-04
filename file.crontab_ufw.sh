@@ -12,7 +12,7 @@ fi
 
 
 # Ports list, 6195 is the ssh and 5128x are the wg ports
-ports=(22 80 443 53 )
+ports=(22 80 443 53)
 
 #___________ Reset all__________
 
