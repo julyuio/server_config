@@ -2,7 +2,7 @@
 
 source conf
 
-tempdir="/july/test2"
+tempdir="/july/crotab"
 
 #______________Check if python & jq are  installed____________
 
