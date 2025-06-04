@@ -44,8 +44,6 @@ ufw allow from 172.16.0.0/12 > /dev/null 2>&1
 ufw allow from 52.38.45.221 > /dev/null 2>&1
 ufw allow from 13.212.180.206 > /dev/null 2>&1
 
-ports=(22 80 443 53 6195 51280 51281 51282 51283 51284 51285 51286 51287 51288 51289 51290)
-
 # Loop through each port and allow it with UFW
 for port in "${ports[@]}"; do
     sudo ufw allow "$port" > /dev/null 2>&1
@@ -71,7 +69,6 @@ fi
 
 echo "$datetime Total:$stat_total SSH:$stat_ssh_tries Nginx:$stat_nginx IPtables:$stat_iptable"
 echo "$datetime $stat_total $stat_ssh_tries $stat_nginx $stat_iptable" >> $stat_file
-
 
 #create and save the ips in a day file in log directory
 if [ ! -d "$ip_log" ]; then
