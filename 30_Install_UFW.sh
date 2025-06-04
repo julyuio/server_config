@@ -170,3 +170,5 @@ echo -e "${IRed}"
 ufw enable
 echo -e "${Color_Off}..."
 
+#rm null
+rm output.txt

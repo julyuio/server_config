@@ -4,8 +4,8 @@ source conf
 
 # wgx is a list of all the interfaces to create and its equivalent ports
 
-wgx=("wg2" "wg3")
-ports=(51280 51283)
+wgx=("wg3")
+ports=(51283)
 
 
 #__________ Installing or configuring WG  ___________________
