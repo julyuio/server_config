@@ -15,7 +15,7 @@ fi
 touch $tempfile
 
 # Ports list, 6195 is the ssh and 5128x are the wg ports
-ports=(22 80 443 53 6195 51280 51281 51282 51283 51284 51285 51286 51287 51288 51289 51290)
+ports=(22 80 443 53)
 
 #___________ Extract IPs__________
 echo "Adding  unsecured ssh tries..."
