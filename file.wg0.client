@@ -1,14 +1,1 @@
-#This file is ment as a default for your CLIENT only !!
-#Please delete this comment when copying this to client 
-#Also replace the IP in te Peer with the IP of the server 
- 
-[Interface]
-PrivateKey = iNJ19f8QbrrEmT4LhakHgB83k1bz8vHu2XEZ8eU/bFo=
-Address = 10.0.0.2/32
-DNS = 1.1.1.1
 
-[Peer]
-PublicKey = Wf7LHkcrwbcwfy5jEoaEUdZG5f2g+mjyBkm1hpBUYXU=
-AllowedIPs = 0.0.0.0/0, ::/0
-Endpoint = 213.165.90.196:51820
- 
