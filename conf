@@ -4,10 +4,7 @@
 #___________ Variables ____________________
 
 USERNAME="july"
-SSHPort=6195
-
-#WGinterface="wg1"
-#WGPort="51820"
+SSHPort=6295
 
 #_____________Setting Colours________________
 
