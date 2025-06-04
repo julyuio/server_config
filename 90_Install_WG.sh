@@ -25,7 +25,7 @@ else
 fi
 
 #Enable if you want Ipv6
-#sysctl -w net.ipv6.conf.all.forwarding=1
+sysctl -w net.ipv6.conf.all.forwarding=1
 sysctl -w net.ipv4.conf.all.forwarding=1
 
 #_______________Creating interfaces ___________________
