@@ -11,7 +11,7 @@ if [ ! -d "$tempdir" ]; then
 fi
 
 
-# Ports list, 6195 is the ssh and 5128x are the wg ports
+#Config here your ports that you want keep open
 ports=(22 80 443 53)
 
 #___________ Reset all__________

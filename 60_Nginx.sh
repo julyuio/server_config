@@ -1,6 +1,11 @@
 #!/bin/bash
 source conf
 
+echo " "
+echo -e "${IGreen} Installing Nginx... ${Color_Off} "
+sleep 2
+echo " "
+
 # Check if Nginx is installed
 if command -v nginx &> /dev/null
 then
@@ -12,12 +17,3 @@ else
 	system nginx start
 fi
 
-#______________ Installing gunicorn_________________
-
-read -p "Installing gunicorn ? (yes/no): " response
-if [ "$response" == "yes" ] || [ -z "$response" ]; then
-        echo "Proceeding..."
-	apt install gunicorn -y
-else
-        echo "Operation canceled."
-fi

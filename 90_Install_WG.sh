@@ -4,8 +4,8 @@ source conf
 
 # wgx is a list of all the interfaces to create and its equivalent ports
 
-wgx=("wg3")
-ports=(51283)
+wgx=("wg0")
+ports=(51280)
 
 
 #__________ Installing or configuring WG  ___________________
@@ -28,6 +28,22 @@ fi
 sysctl -w net.ipv6.conf.all.forwarding=1
 sysctl -w net.ipv4.conf.all.forwarding=1
 
+# Define sysctl configuration file
+SYSCTL_CONF="/etc/sysctl.conf"
+
+# Backup the current sysctl.conf file
+cp "$SYSCTL_CONF" "$SYSCTL_CONF.bak"
+
+# Add forwarding settings if not already present
+grep -qxF "net.ipv6.conf.all.forwarding=1" "$SYSCTL_CONF" || echo "net.ipv6.conf.all.forwarding=1" >> "$SYSCTL_CONF"
+grep -qxF "net.ipv4.conf.all.forwarding=1" "$SYSCTL_CONF" || echo "net.ipv4.conf.all.forwarding=1" >> "$SYSCTL_CONF"
+
+# Apply the changes
+sysctl -p
+
+echo "IPv4 and IPv6 forwarding enabled and made persistent!"
+
+
 #_______________Creating interfaces ___________________
 
 for i in "${!wgx[@]}"; do
@@ -35,3 +51,8 @@ for i in "${!wgx[@]}"; do
 	./create_wg_conf.sh ${wgx[i]} ${ports[i]}
 done
 
+echo ""
+echo "usually if the configuration does not work and i have 0B sent then usually it is an issue witht he firewall. If only 92B are recieved then it is an issue with IP forwarding , either check forwardign rules or reset iptables. If recieving kB of data , then all is ok."
+echo "Done..."
+echo ""
+sleep 2

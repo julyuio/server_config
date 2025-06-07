@@ -1,0 +1,29 @@
+
+#!/bin/bash
+
+source conf
+
+echo " "
+echo -e "${IGreen} Let's Encrypt ...Installing Certbot ${Color_Off} "
+sleep 2
+echo " "
+
+apt install certbot -y
+apt install python3-certbot-nginx -y
+
+echo " Allowing UFW port 80 and 443..."
+ufw allow 80
+ufw allow 443
+
+echo " "
+echo -e "${IRed} Make sure you have enabled port 80 and 443 on the VPS firewall... ${Color_Off} Have you done it ? "
+sleep 10
+echo " "
+
+certbot --nginx
+
+echo " Denying UFW port 80"
+ufw deny 80
+echo -e "${IGreen} Done ... ${Color_Off} Make sure you have port ${IRed}80 disable${Color_Off} in the VPS firewall and only ${IGreen}enable port 443 ${Color_Off}. If failure it is most probably the firewall. You can also try to manually configure the SSL, but the automatic one should work. It expires in 90 days, thus must enable port 80 and run 'sudo certbot renew'. Good luck ..."
+sleep 2
+echo " "
