@@ -15,14 +15,14 @@ chmod -x /etc/update-motd.d/91-release-upgrade
 chmod -x /etc/update-motd.d/10-help-text
 chmod -x /etc/update-motd.d/50-motd-news
 
-touch $clear_file
-chmod +x $clear_file
+#touch $clear_file
+#chmod +x $clear_file
 touch $welcome_file
 chmod +x $welcome_file
 
 
-echo "#!/bin/sh" >$clear_file
-echo "clear" >>$clear_file
+#echo "#!/bin/sh" >$clear_file
+#echo "clear" >>$clear_file
 
 
 echo "#!/bin/sh" >$welcome_file

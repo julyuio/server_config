@@ -30,7 +30,7 @@ ufw allow 80 > /dev/null 2>&1
 ufw allow 22 > /dev/null 2>&1
 ufw allow 53 > /dev/null 2>&1
 ufw allow 443 > /dev/null 2>&1
-ufw allow 6295 > /dev/null 2>&1
+ufw allow 6195 > /dev/null 2>&1
 # Allowing IPs from Let's Encrypt SSL
 ufw allow from 52.38.45.221 > /dev/null 2>&1
 ufw allow from 13.212.180.206 > /dev/null 2>&1
@@ -159,7 +159,9 @@ rm $IP_FILE
 # icmp does not work for whatever reason
 #ufw deny proto icmp from any to any
 
-sudo ufw logging on
+#sudo ufw logging on
+ufw logging off
+rm output.txt
 
 # Add this if you get atacks on 6195 port. it limits
 #sudo ufw limit 6195/tcp
@@ -170,5 +172,3 @@ echo -e "${IRed}"
 ufw enable
 echo -e "${Color_Off}..."
 
-#rm null
-rm output.txt
