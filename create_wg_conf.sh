@@ -81,22 +81,30 @@ systemctl enable "wg-quick@$int.service"
 #enable UFW
 ufw allow $port 
 
-#wg_client="wg1.client"
+wg_client="/tmp/wg$int_n.client"
 #________________ Client Configuration File_________________
 echo "_________________________________"
 echo -e "Please copy this to the client and enable port${IRed} $port in the firewall: ${Color_Off}"
 echo ""
 
-echo "[Interface]"
-echo "PrivateKey = $pk_client"
-echo "Address = 172.16.$int_n.2/24"
-echo "DNS = 1.1.1.1"
-echo ""
-echo "[Peer]"
-echo "PublicKey = $pub_server"
-echo "AllowedIPs = 0.0.0.0/0, ::/0"
-echo "Endpoint = $wgip:$port"
+echo "[Interface]" > $wg_client
+echo "PrivateKey = $pk_client">>$wg_client
+echo "Address = 172.16.$int_n.2/24">>$wg_client
+echo "DNS = 1.1.1.1">>$wg_client
+echo "">>$wg_client
+echo "[Peer]">>$wg_client
+echo "PublicKey = $pub_server">>$wg_client
+echo "AllowedIPs = 0.0.0.0/0, ::/0">>$wg_client
+echo "Endpoint = $wgip:$port">>$wg_client
 echo ""
 echo ""
 
+#__________________ QR Encode for easy mobile deployment______________
+if ! command -v qrencode >/dev/null 2>&1; then
+    echo -e "${IRed}QR encode is not installed${Color_Off}"
+else
+    qrencode -t ansiutf8 < $wg_client
+fi
 
+cat $wg_client
+rm $wg_client

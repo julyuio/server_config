@@ -4,8 +4,8 @@ source conf
 
 # wgx is a list of all the interfaces to create and its equivalent ports
 
-wgx=("wg0")
-ports=(51280)
+wgx=("wg1")
+ports=(51281)
 
 
 #__________ Installing or configuring WG  ___________________
@@ -22,6 +22,7 @@ else
 
 	# installing wireguard
 	apt install wireguard -y
+	apt install qrencode -y
 fi
 
 #Enable if you want Ipv6
@@ -51,8 +52,8 @@ for i in "${!wgx[@]}"; do
 	./create_wg_conf.sh ${wgx[i]} ${ports[i]}
 done
 
-echo ""
-echo "usually if the configuration does not work and i have 0B sent then usually it is an issue witht he firewall. If only 92B are recieved then it is an issue with IP forwarding , either check forwardign rules or reset iptables. If recieving kB of data , then all is ok."
-echo "Done..."
+echo "-------------------- Note ---------------------------"
+echo "Usually if the configuration does not work and you have 0B sent then usually it is an issue witht he Firewall. If only 92B are recieved then it is an issue with IP forwarding, either check forwarding rules or reset iptables. If recieving kB of data , then all is ok."
 echo ""
 sleep 2
+echo "Done... "
