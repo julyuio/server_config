@@ -8,7 +8,7 @@ DEST_DIR="/usr/share/geoip"
 DEST_FILE="${DEST_DIR}/dbip-city-${DATE}.mmdb.gz"
 DEST_FILE_nogz="${DEST_DIR}/dbip-city-${DATE}.mmdb"
 GOACC_REPORT="zcat -f /var/log/nginx/access.log*.gz  /var/log/nginx/access.log* | goaccess - --log-format=COMBINED --geoip-database=$DEST_FILE_nogz -o /var/www/html/georeport.html >> /july/cron.log 2>&1"
-GOACC_REPORT_NO404="zcat -f /var/log/nginx/access.log*.gz  cat /var/log/nginx/access.log* | goaccess - --ignore-status=400 --ignore-status=301 --ignore-status=302 --ignore-status=403 --ignore-status=404 --log-format=COMBINED --geoip-database=$DEST_FILE_nogz -o /var/www/html/georeport_no404.html >> /july/cron.log 2>&1"
+GOACC_REPORT_NO404="zcat -f /var/log/nginx/access.log*.gz /var/log/nginx/access.log* | goaccess - --ignore-status=400 --ignore-status=301 --ignore-status=302 --ignore-status=403 --ignore-status=404 --log-format=COMBINED --geoip-database=$DEST_FILE_nogz -o /var/www/html/georeport_no404.html >> /july/cron.log 2>&1"
 GOACC_REPORT_REF="zcat -f /var/log/nginx/access.log*.gz /var/log/nginx/access.log* | awk '$11 != \"-\" && $11 != \"\\\"-\\\"\"' | goaccess --ignore-status=400 --ignore-status=404 --ignore-status=408 --log-format=COMBINED --geoip-database=$DEST_FILE_nogz -o /var/www/html/georeport_ref_only.html"
 
 echo " "
@@ -41,7 +41,7 @@ echo -e -n "$total_ips${IRed}Adding Goaccess to crontab ${IGreen}  ${Color_Off} 
 read response
   if [ "$response" = "y" ] || [ -z "$response" ]; then
        if crontab -l 2>/dev/null | grep -q 'goaccess'; then
-            echo -e "[+] Script is already in crontab ${IRed} You have to edit using crontab -e and remove extra lines${Color_Off}"
+            echo -e "[+] Script is already in crontab ${IRed} You have to edit using crontab -e and remove the previous lines${Color_Off}"
        else
             echo "[+] Adding lines to crontab"
        fi
