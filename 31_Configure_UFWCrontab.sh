@@ -2,7 +2,14 @@
 
 source conf
 
-tempdir="/july/crontab"
+CRONDIR="/july/crontab"
+
+#_______________ Install & Configure UFW _______________
+echo " "
+echo -e "${IGreen} Configuring crontab ufw  ... ${Color_Off} "
+echo " "
+sleep 2
+
 
 #______________Check if python & jq are  installed____________
 
@@ -22,31 +29,32 @@ then
     apt-get install -y jq
 fi
 
-#_______________ Install & Configure UFW _______________
-echo " "
-echo -e "${IGreen} Configuring crontab ufw  ... ${Color_Off} "
-sleep 2
-echo " "
+apt install iptables-persistant -y
+systemctl enable netfilter-persistent
 
+#apt install ipset
 #________________ Create dir and copy files____________
 
-echo "Creating dirs and copying files..."
-if [ ! -d "$tempdir" ]; then
-    mkdir -p $tempdir
+echo "[+] Creating dirs and copying files..."
+if [ ! -d "$CRONDIR" ]; then
+    mkdir -p $CRONDIR
 fi
 
-cp file.crontab_ufw.sh  $tempdir/crontab_ufw_monthly.sh
-cp file.crontab_ufw_6hours.sh $tempdir/crontab_ufw_daily.sh
-touch $tempdir/allow_list.txt
-touch $tempdir/ block_list.txt
-cp conf $tepdir/conf
-cp kompress_ipv4.py $tempdir/kompress_ipv4.py
-chmod 775 $tempdir/crontab_ufw_monthly.sh
-chmod 775 $tempdir/crontab_ufw_daily.sh
+cp file.crontab_ufw_monthly.sh  $CRONDIR/crontab_ufw_monthly.sh
+cp file.crontab_ufw_daily.sh $CRONDIR/crontab_ufw_daily.sh
+touch $CRONDIR/allow_list.txt
+touch $CRONDIR/ block_list.txt
+cp conf $CRONDIR/conf
+cp kompress_ipv4.py $CRONDIR/kompress_ipv4.py
+chmod 775 $CRONDIR/crontab_ufw_monthly.sh
+chmod 775 $CRONDIR/crontab_ufw_daily.sh
 
-echo -e " Run command :${IRed} sudo crontab -e ${Color_Off} and copy the folowing line at the end of the file: "
-echo -e " ${IGreen}45  23  *   *   *    $tempdir/crontab_ufw_daily.sh${Color_Off}"
-echo -e " ${IGreen}45  23  1   *   *    $tempdir/crontab_ufw_monthly.sh${Color_Off}"
-echo " "
+#echo -e " Run command :${IRed} sudo crontab -e ${Color_Off} and copy the folowing line at the end of the file: "
+#echo -e " ${IGreen}45  23  *   *   *    $CRONDIR/crontab_ufw_daily.sh${Color_Off}"
+#echo -e " ${IGreen}45  23  1   *   *    $CRONDIR/crontab_ufw_monthly.sh${Color_Off}"
+#echo " "
 
-
+echo "[+] Adding to crontab..."
+(crontab -l 2>/dev/null; echo "45  23  *  *  * $CRONDIR/crontab_ufw_daily.sh") | crontab -
+(crontab -l 2>/dev/null; echo "45  23  1  *  * $CRONDIR/crontab_ufw_monthly.sh") | crontab -
+echo "[+] Done"

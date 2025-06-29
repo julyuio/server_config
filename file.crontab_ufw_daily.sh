@@ -1,30 +1,32 @@
 #!/bin/bash
 
-#_________Config__________________
-tempdir="/july/crontab"
-tempfile="$tempdir/temp_ips.txt"
-ip_block="$tempdir/block_list.txt"
-ip_allow="$tempdir/allow_list.txt"
-stat_file="$tempdir/stats.txt"
-ip_log="$tempdir/log"
+#source conf
 
-if [ ! -d "$tempdir" ]; then
-    mkdir -p $tempdir
+#_________Config__________________
+CRONDIR="/july/crontab"
+TMPFILE="$CRONDIR/temp_ips.txt"
+IPBLOCK="$CRONDIR/block_list.txt"
+IPALLOW="$CRONDIR/allow_list.txt"
+STATFILE="$CRONDIR/stats.txt"
+IPLOGFILE="$CRONDIR/log"
+
+if [ ! -d "$CRONDIR" ]; then
+    mkdir -p $CRONDIR
 fi
 
-touch $tempfile
+touch $TMPFILE
 
-# Ports list, 6195 is the ssh and 5128x are the wg ports
+# Allow Ports list
 ports=(22 80 443 53)
 
 #___________ Extract IPs__________
 echo "Adding  unsecured ssh tries..."
-sudo journalctl --since="1 days ago" -u ssh | grep -e "banner exchange" -e "fail" |grep -E -o '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)' >> $tempfile
-stat_ssh_tries=$(wc -l < $tempfile)
+sudo journalctl --since="1 days ago" -u ssh | grep -e "banner exchange" -e "fail" |grep -E -o '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)' >> $TMPFILE
+stat_ssh_tries=$(wc -l < $TMPFILE)
 
 echo "Extracting IPs excluding HTTP access codes: 40x and 50x"
-awk '$9 ~ /^40[0-9]/ || $9 ~ /^50[0-9]/  {print $1}'  /var/log/nginx/access.log | sort -ur  | grep -v '10.0.0' | grep -v '172.16.0' >> $tempfile
-stat_total=$(wc -l < $tempfile)
+awk '$9 ~ /^40[0-9]/ || $9 ~ /^50[0-9]/  {print $1}'  /var/log/nginx/access.log | sort -ur  | grep -v '10.0.0' | grep -v '172.16.0' >> $TMPFILE
+stat_total=$(wc -l < $TMPFILE)
 
 #____________ Block IPs___________
 # Read the file line by line
@@ -33,7 +35,7 @@ while IFS= read -r line
 do
   #echo "Denying IP: $line"
   ufw deny from "$line" > /dev/null 2>&1
-done < "$tempfile"
+done < "$TMPFILE"
 
 #____________ Allow IPs___________
 echo "Allowing own IPs and ports..."
@@ -54,7 +56,7 @@ while IFS= read -r line
 do
   #echo "Allowing IP: $line"
   ufw allow from "$line" > /dev/null 2>&1
-done < "$ip_allow"
+done < "$IPALLOW"
 
 #________ Statistics_________
 
@@ -63,26 +65,26 @@ stat_nginx=$(expr $stat_total - $stat_ssh_tries)
 datetime=$(date +"%d-%m-%Y %H:%M:%S")
 stat_iptable=$(iptables -L | wc -l)
 
-if [ ! -f "$stat_file" ]; then
-    echo "Date Time Total SSH Nginx IPtables" > $stat_file
+if [ ! -f "$STATFILE" ]; then
+    echo "Date Time Total SSH Nginx IPtables" > $STATFILE
 fi
 
 echo "$datetime Total:$stat_total SSH:$stat_ssh_tries Nginx:$stat_nginx IPtables:$stat_iptable"
-echo "$datetime $stat_total $stat_ssh_tries $stat_nginx $stat_iptable" >> $stat_file
+echo "$datetime $stat_total $stat_ssh_tries $stat_nginx $stat_iptable" >> $STATFILE
 
 #create and save the ips in a day file in log directory
-if [ ! -d "$ip_log" ]; then
-    mkdir -p $ip_log
+if [ ! -d "$IPLOGFILE" ]; then
+    mkdir -p $IPLOGFILE
 fi
-logfile="$ip_log/blocked_$(date +%d-%m-%Y).txt"
-cat $tempfile > $logfile
+logfile="$IPLOGFILE/blocked_$(date +%d-%m-%Y).txt"
+cat $TMPFILE > $logfile
 
 
 #__________Clean up______________
 ufw reload
 
 #Adding today's IPs to the the main ip file
-cat $tempfile >> $ip_block
-rm $tempfile
+cat $TMPFILE >> $IPBLOCK
+rm $TMPFILE
 echo "Done"
 echo ""
