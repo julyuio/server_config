@@ -15,6 +15,7 @@ apt install fail2ban -y
 echo "Copying conf files..."
 cp file.jail.local /etc/fail2ban/jail.local
 cp file.nginx-4xx.conf /etc/fail2ban/filter.d/nginx-4xx.conf
+cp file.nginx-extra.conf /etc/fail2ban/filter.d/nginx-extra.conf
 echo "Restarting fail2ban..."
 service fail2ban restart
 echo "Done"
