@@ -14,6 +14,6 @@ then
 else
     	echo "Nginx is NOT installed."
 	apt install nginx -y
-	system nginx start
+	systemctl nginx start
 fi
 
